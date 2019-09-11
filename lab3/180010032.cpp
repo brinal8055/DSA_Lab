@@ -6,8 +6,8 @@ ofstream f1;
 
 class Heap
 {
-	vector <int> a;
-	vector <int> heaps;
+	vector<int> a;
+	vector<int> heaps;
 	int heap_size;
 
 	public:
@@ -29,11 +29,11 @@ class Heap
 		}
 		void max_heapify(int i)
 		{
-			int largest = i;
-			if(left_child(i)<heap_size and a[left_child(i)] > a[i])
-				largest = right_child(i);
-			if(right_child(i)<heap_size and a[right_child(i)] > a[i])
+			int largest=i;
+			if(left_child(i)<heap_size and a[left_child(i)] > a[largest])
 				largest = left_child(i);
+			if(right_child(i)<heap_size and a[right_child(i)] > a[largest])
+				largest = right_child(i);
 			if(i!=largest)
 			{
 				swap(a[i],a[largest]);
@@ -42,11 +42,11 @@ class Heap
 		}
 		void max_heapify2(int i,int heap_size2)
 		{
-			int largest = i;
-			if(left_child(i)<heap_size2 and heaps[left_child(i)] > a[i])
-				largest = right_child(i);
-			if(right_child(i)<heap_size2 and heaps[right_child(i)] > a[i])
+			int largest=i;
+			if(left_child(i)<heap_size2 and heaps[left_child(i)] > heaps[largest])
 				largest = left_child(i);
+			if(right_child(i)<heap_size2 and heaps[right_child(i)] > heaps[largest])
+				largest = right_child(i);
 			if(i!=largest)
 			{
 				swap(heaps[i],heaps[largest]);
@@ -55,10 +55,10 @@ class Heap
 		}
 		int increase_key(int i, int key)
 		{
-			if(a[i]<=key)
+			if(a[i] <= key)
 			{
 				a[i] = key;
-				while(i>0 and a[i] > a[parent(i)])
+				while(i > 0 and a[i] > a[parent(i)])
 				{
 					swap(a[i],a[parent(i)]);
 					i = parent(i);
@@ -76,30 +76,30 @@ class Heap
 			a.push_back(-INT_MAX);
 			increase_key(heap_size-1,k);
 		}
-		int maximum()
+		void maximum()
 		{
 			if(heap_size>0)
-				return a[0];
-			else
-				return NULL;
+				f1<<a[0];
+			f1<<endl;
 		}
-		int extract_max()
+		void extract_max()
 		{
 			if(heap_size>0)
 			{
 				int max = a[0];
 				a[0] = a[heap_size-1];
 				heap_size -= 1;
+				a.pop_back();
 				max_heapify(0);
-				return max;
+				f1<<max;
 			}
-			else
-				return NULL;
+			f1<<endl;
 
 		}
-		vector <int> heap_sort()
+		void heap_sort()
 		{
 			int heap_size2 = heap_size;
+			heaps.clear();
 			heaps = a;
 			while(heap_size2>1)
 			{
@@ -108,7 +108,15 @@ class Heap
 				max_heapify2(0,heap_size2);
 
 			}
-			return heaps;
+			if(heap_size>0)
+			{
+				f1<<heaps[0];
+				for(int i=1;i<heap_size;i++)
+				{
+					f1<<" "<<heaps[i];
+				}
+			}
+			f1<<endl;
 		}
 };
 
@@ -134,42 +142,47 @@ int main(int argc, char **argv)
 		{
 		   line[++i] = strtok(NULL,"\n");
 		}
+		// f1<<line[0]<<endl;
 		if (!strcmp(line[0],"insert"))
 		{
 			int k = atoi(line[1]);
 			test.insert(k);
-			cout<<k<<" inserted\n";
+			f1<<k<<" inserted\n";
 		}
 		else if(!strcmp(line[0],"maximum"))
 		{
-			cout<<test.maximum()<<endl;
+			test.maximum();
 		}
 		else if(!strcmp(line[0],"extract-max"))
 		{
-			cout<<test.extract_max()<<endl;
+			test.extract_max();
 		}
 		else if(!strcmp(line[0],"increase-key"))
 		{
+			// f1<<line[1]<<endl;
 			int index = atoi(line[1]);
-			int number = atoi(line[2]);
-			if(test.increase_key(index,number)==1)
+			// f1<<index<<endl;
+			int number = atoi(line[1]+2);
+			// f1<<number<<endl;
+			if(test.increase_key(index,number))
 			{
-				cout<<"Key at "<<index<<" changed to "<<number<<endl;
+				f1<<"Key at "<<index<<" changed to "<<number<<endl;
 			}
 			else
 			{
-				cout<<number<<" is less than the current key at "<<index<<endl;
+				f1<<number<<" is less than the current key at "<<index<<endl;
 			}
 		}
 		else if(!strcmp(line[0],"sort"))
 		{
-			vector <int> v = test.heap_sort();
-			cout<<v[0];
-			for(int i = 1;i<v.size();i++)
-			{
-				cout<<" "<<v[i];
-			}
-			cout<<endl;
+			// f1<<"Inside sort"<<endl;
+			test.heap_sort();
+			// f1<<"After heap sort"<<endl;
+			// f1<<v[0];
+			// for(int i = 1;i<v.size();i++)
+			// {
+			// 	f1<<" "<<v[i];
+			// }
 		}
 	}
 	f1.close();
